@@ -5,6 +5,7 @@ function TNodeSystem.rFindNearest(aNode: TNodeP; aDistance: Single; aPoint: TPoi
 		I:Int64;
 		Offset:TPointS;
 	begin
+ 		tmpNode := aNode;
 		minDistance := aDistance;
 		Offset.X := aNode.Pos.X - aPoint.X; Offset.Y := aNode.Pos.Y - aPoint.Y;
 		tmpDistance := Hypot(Offset.X,Offset.Y);
