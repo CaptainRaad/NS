@@ -1,34 +1,32 @@
-function TNodeSystem.rFindNearest(aNode: TNodeP; aDistance: Single; aPoint: TPointS): TNodeP;
+function TNodeSystem.rFindNearest(aNode: TNodeP; aDistance: Single; aPoint: TPointS; aIdx:Int64): TNodeP;
   var
 		tmpNode:TNodeP;
 		tmpDistance,minDistance:Single;
 		I:Int64;
 		Offset:TPointS;
 	begin
- 		tmpNode := aNode;
+    if aNode.SIdx <> aIdx then tmpNode := aNode;
 		minDistance := aDistance;
 		Offset.X := aNode.Pos.X - aPoint.X; Offset.Y := aNode.Pos.Y - aPoint.Y;
 		tmpDistance := Hypot(Offset.X,Offset.Y);
-
-		if tmpDistance < minDistance then
+    if tmpDistance < minDistance then
 			begin
 				tmpNode := aNode;
 				minDistance := tmpDistance;
+        aNode.SIdx := aIdx;
 			end;
-
-		aNode.Find := not aNode.Find;
 
 		for I := 0 to Length(aNode.Links) - 1 do
 			begin
-				if aNode.Links[I] <> nil then if aNode.Links[I].Find <> aNode.find then
+				if aNode.Links[I] <> nil then if aNode.Links[I].SIdx <> aIdx then
 					begin
-						Offset.X := aNode.Links[I].Pos.X; Offset.Y := aNode.Links[I].Pos.Y;
+						Offset.X := aNode.Links[I].Pos.X - aPoint.X; Offset.Y := aNode.Links[I].Pos.Y - aPoint.Y;
 						tmpDistance := Hypot(Offset.X, Offset.Y);
 						if tmpDistance < minDistance then
 							begin
 								minDistance := tmpDistance;
-								aNode.Links[I].Find := not aNode.Links[I].Find;
-								tmpNode := rFindNearest(aNode.Links[I], minDistance, aPoint);
+								aNode.Links[I].SIdx := aIdx;
+								tmpNode := rFindNearest(aNode.Links[I], minDistance, aPoint, aIdx);
 							end;
 					end;
 			end;
