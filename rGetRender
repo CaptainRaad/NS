@@ -1,0 +1,31 @@
+function TNodeSystem.rGetRender(aNode: TNodeP; aIDX:Int64): TNodeP;
+  var
+    I:Int64;
+    tmpNode:TNodeP;
+  begin
+    tmpNode := nil;
+      if aNode.rIDX <> aIDX then
+        begin
+          aNode.rIDX := aIDX;
+          tmpNode := aNode;
+          rGetRender := tmpNode;
+          exit;
+        end;
+      for I := 0 to Length(aNode.links) - 1 do
+        begin
+          if aNode.links[I] <> nil then if aNode.links[I].rIDX <> aIDX then
+            begin
+              tmpNode := aNode.links[I];
+              tmpNode.rIDX := aIDX;
+              break;
+            end;
+        end;
+      if tmpNode = nil then
+        for I := 0 to Length(aNode.links) - 1 do
+          begin
+            if aNode.links[I] <> nil then
+              tmpNode := rGetRender(aNode.links[I], aIDX);
+              if tmpNode <> nil then tmpNode.rIDX := aIDX;
+          end;
+    rGetRender := tmpNode;
+  end;
